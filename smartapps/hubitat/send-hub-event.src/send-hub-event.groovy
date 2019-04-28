@@ -22,12 +22,9 @@ definition(
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
     iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
     iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png")
-
-
 preferences {
 	page(name: "main")
 }
-
 def main(){
     	dynamicPage(name: "main", title: "Send Hub Events", uninstall: true, install: true){
     		section {
@@ -51,18 +48,13 @@ def main(){
 		}
 	}
 }
-
 def installed() {
 	initialize()
 }
-
-
 def updated() {
 	unsubscribe()
 	initialize()
 }
-
-
 def initialize() {
 	subscribe(presenceDevices, "presence", handleDeviceEvent)
 	subscribe(motionDevices, "motion", handleDeviceEvent)
@@ -90,7 +82,6 @@ def initialize() {
 	if(modes) subscribe(location, modeEvent)
 	sendSetup()
 }
-
 def handleDeviceEvent(evt) {
 def dni = "stHub_${evt?.device?.deviceNetworkId}"
 def msg = """POST / HTTP/1.1
@@ -105,7 +96,6 @@ ${evt.value}
 		sendHubCommand(new physicalgraph.device.HubAction(msg, physicalgraph.device.Protocol.LAN, "${ip}:39501"))
 	}
 }
-
 def omniDeviceEvent(evt) {
 def dni = "stHub_${evt?.device?.deviceNetworkId}"
 def msg = """POST / HTTP/1.1
@@ -120,7 +110,6 @@ ${evt.name}:${evt.value}
 		sendHubCommand(new physicalgraph.device.HubAction(msg, physicalgraph.device.Protocol.LAN, "${ip}:39501"))
 	}
 }
-
 def sendSetup() {
     def thisMsg = ""
     presenceDevices.each {thisMsg = thisMsg + "p\t$it.displayName\tstHub_$it.deviceNetworkId\n"}
@@ -145,7 +134,6 @@ ${thisMsg}
 		sendHubCommand(new physicalgraph.device.HubAction(msg, physicalgraph.device.Protocol.LAN, "${ip}:39501"))
 	}    
 }
-
 def modeEvent(evt){
 	if(evt.name != "mode") return
 	def dni = "stHub_mode_"
@@ -161,11 +149,9 @@ ${evt.value}
 		sendHubCommand(new physicalgraph.device.HubAction(msg, physicalgraph.device.Protocol.LAN, "${ip}:39501"))
 	}
 }
-	
 def uninstalled() {
 	removeChildDevices(getChildDevices())
 }
-
 private removeChildDevices(delete) {
 	delete.each {deleteChildDevice(it.deviceNetworkId)}
 }
